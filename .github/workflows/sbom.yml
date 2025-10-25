@@ -3,27 +3,29 @@ name: Generate SBOM
 on:
   push:
     branches: [ main ]
+  pull_request:
 
 jobs:
   sbom:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # Lädt deinen Code herunter
 
-      - name: Generate CycloneDX SBOM
-        uses: CycloneDX/gh-actions@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: '.'      # Pfad zum Projekt
-          format: 'json' # Ausgabeformat
-          output: 'sbom' # Dateiname (sbom.json)
-        # Erstellt automatisch die SBOM-Datei
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+        # wenn du kein package-lock.json hast, nimm: npm install
+
+      - name: Generate CycloneDX SBOM (JSON)
+        run: npx @cyclonedx/cyclonedx-npm --output-file sbom.json --output-format json
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
         with:
           name: sbom-cyclonedx
           path: sbom.json
-        # Lädt die SBOM als Artefakt hoch
