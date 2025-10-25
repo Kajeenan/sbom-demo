@@ -1,0 +1,29 @@
+name: Generate SBOM
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # Lädt deinen Code herunter
+
+      - name: Generate CycloneDX SBOM
+        uses: CycloneDX/gh-actions/generate-sbom@v2
+        with:
+          path: '.'      # Pfad zum Projekt
+          format: 'json' # Ausgabeformat
+          output: 'sbom' # Dateiname (sbom.json)
+        # Erstellt automatisch die SBOM-Datei
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom.json
+        # Lädt die SBOM als Artefakt hoch
