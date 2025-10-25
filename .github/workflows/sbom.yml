@@ -14,7 +14,7 @@ jobs:
         # Lädt deinen Code herunter
 
       - name: Generate CycloneDX SBOM
-        uses: CycloneDX/gh-actions@v2
+        uses: CycloneDX/gh-actions@v1
         with:
           path: '.'      # Pfad zum Projekt
           format: 'json' # Ausgabeformat
